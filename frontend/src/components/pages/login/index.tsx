@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import {
   MDBBtn,
@@ -11,21 +11,25 @@ import {
   MDBInput,
   MDBIcon,
 } from "mdb-react-ui-kit";
-import { loginUser } from "./service"; // Import the loginUser function
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
+import { LoginData } from "../../../@types";
 
 function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const { login, user } = useAuth();
+  const [message, setMessage] = useState("");
+
+  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     try {
-      const response = await loginUser({ email, password });
+      e.preventDefault();
+      const data = Object.fromEntries(
+        new FormData(e.target as HTMLFormElement).entries()
+      ) as any as LoginData;
+      const response = await login(data);
       setMessage("Login successful!");
       console.log("Login successful:", response);
-      navigate("/vacations");
     } catch (error) {
       if (error instanceof Error) {
         setMessage(error.message);
@@ -36,6 +40,11 @@ function LoginPage() {
       }
     }
   };
+  useEffect(() => {
+    if (user) {
+      navigate("/vacations");
+    }
+  }, [user]);
 
   return (
     <MDBContainer fluid>
@@ -50,41 +59,31 @@ function LoginPage() {
               <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">
                 Sign in
               </p>
+              <form onSubmit={handleLogin} className="w-100">
+                <div className="d-flex flex-row align-items-center mb-4">
+                  <MDBIcon fas icon="envelope me-3" size="lg" />
+                  <MDBInput label="Your Email" id="form2" type="email" />
+                </div>
 
-              <div className="d-flex flex-row align-items-center mb-4">
-                <MDBIcon fas icon="envelope me-3" size="lg" />
-                <MDBInput
-                  label="Your Email"
-                  id="form2"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
+                <div className="d-flex flex-row align-items-center mb-4">
+                  <MDBIcon fas icon="lock me-3" size="lg" />
+                  <MDBInput label="Password" id="form3" type="password" />
+                </div>
 
-              <div className="d-flex flex-row align-items-center mb-4">
-                <MDBIcon fas icon="lock me-3" size="lg" />
-                <MDBInput
-                  label="Password"
-                  id="form3"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
+                <MDBBtn className="mb-4" size="lg">
+                  Login
+                </MDBBtn>
+                
+                <MDBBtn
+                  href="http://localhost:5173/register"
+                  className="mb-4"
+                  size="lg"
+                >
+                  Don't have an account? Register now!
+                </MDBBtn>
 
-              <MDBBtn className="mb-4" size="lg" onClick={handleLogin}>
-                Login
-              </MDBBtn>
-              <MDBBtn
-                href="http://localhost:5173/register"
-                className="mb-4"
-                size="lg"
-              >
-                Don't have an account? Register now!
-              </MDBBtn>
-
-              {message && <p>{message}</p>}
+                {message && <p>{message}</p>}
+              </form>
             </MDBCol>
 
             <MDBCol

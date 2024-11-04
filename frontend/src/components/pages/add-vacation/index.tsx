@@ -6,8 +6,9 @@ import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Stack from "@mui/material/Stack";
 import { addVacationToApi } from "./service";
+import AdminGuard from "../../AdminGuard";
 
-export default function AddVacationPage() {
+function AddVacationPage() {
   const [formData, setFormData] = useState({
     destination: "",
     description: "",
@@ -160,3 +161,5 @@ export function BasicButtons() {
     </Stack>
   );
 }
+
+export default AdminGuard(AddVacationPage);

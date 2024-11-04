@@ -19,6 +19,7 @@ import VacationsPage from "./components/pages/vacations";
 import RegisterPage from "./components/pages/registration";
 import LoginPage from "./components/pages/login";
 import AddVacationPage from "./components/pages/add-vacation";
+import { useAuth } from "./context/AuthContext";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +58,7 @@ const pages = ["vacations", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function ResponsiveAppBar() {
+  const { logout, user } = useAuth();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -167,11 +169,24 @@ function ResponsiveAppBar() {
             ))}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
+            {user && <Tooltip title="Open settings">
+              <p
+                onClick={handleOpenUserMenu}
+                style={{
+                  marginBlock: "auto",
+                  width: "50px",
+                  height: "50px",
+                  borderRadius: "50%",
+                  background: "gray",
+                  color: "white",
+                  fontSize: "20px",
+                  display: "grid",
+                  placeItems: "center",
+                }}
+              >
+                {user?.first_name.charAt(0).toUpperCase()}
+              </p>
+            </Tooltip>}
             <Menu
               sx={{ mt: "45px" }}
               id="menu-appbar"
@@ -189,7 +204,19 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem
+                  key={setting}
+                  onClick={() => {
+                    // handle the setting
+                    if (setting == "Logout") {
+                      const confirmed = confirm(
+                        "Are you sure you want to log out?"
+                      );
+                      if (confirmed) logout();
+                    }
+                    handleCloseUserMenu();
+                  }}
+                >
                   <Typography sx={{ textAlign: "center" }}>
                     {setting}
                   </Typography>

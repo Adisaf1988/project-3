@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import {
@@ -14,33 +14,24 @@ import {
 } from "mdb-react-ui-kit";
 import { registerUser } from "./service";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
+import { RegisterData } from "../../../@types";
 
 function RegisterPage() {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-  });
-
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const { register, user } = useAuth();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     try {
-      const response = await registerUser(formData);
+      const data = Object.fromEntries(
+        new FormData(e.target as HTMLFormElement).entries()
+      ) as any as RegisterData;
+      const response = await register(data);
       setMessage("Registration successful!");
       console.log("Registration successful:", response);
-
-      navigate("/vacations");
     } catch (error) {
       if (error instanceof Error) {
         setMessage(error.message);
@@ -51,6 +42,12 @@ function RegisterPage() {
       }
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/vacations");
+    }
+  }, [user]);
 
   return (
     <MDBContainer fluid>
@@ -74,8 +71,6 @@ function RegisterPage() {
                     id="form1"
                     type="text"
                     name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
                     className="w-100"
                   />
                 </div>
@@ -86,8 +81,6 @@ function RegisterPage() {
                     id="form2"
                     type="text"
                     name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
                     className="w-100"
                   />
                 </div>
@@ -99,8 +92,6 @@ function RegisterPage() {
                     id="form3"
                     type="email"
                     name="email"
-                    value={formData.email}
-                    onChange={handleChange}
                     className="w-100"
                   />
                 </div>
@@ -112,8 +103,6 @@ function RegisterPage() {
                     id="form4"
                     type="password"
                     name="password"
-                    value={formData.password}
-                    onChange={handleChange}
                     className="w-100"
                   />
                 </div>

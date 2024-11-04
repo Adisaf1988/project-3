@@ -9,8 +9,9 @@ import {
   MDBRipple,
 } from "mdb-react-ui-kit";
 import { SendToApiVacations } from "./service";
+import AuthGuarded from "../../AuthGuard";
 
-export default function VacationsPage() {
+function VacationsPage() {
   interface Vacation {
     destination: string;
     description: string;
@@ -260,3 +261,5 @@ export default function VacationsPage() {
     </div>
   );
 }
+
+export default AuthGuarded(VacationsPage);

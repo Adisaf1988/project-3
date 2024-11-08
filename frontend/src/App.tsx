@@ -9,7 +9,6 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
@@ -20,6 +19,7 @@ import RegisterPage from "./components/pages/registration";
 import LoginPage from "./components/pages/login";
 import AddVacationPage from "./components/pages/add-vacation";
 import { useAuth } from "./context/AuthContext";
+import EditVacation from "./components/pages/edit-vacation";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "add-vacation",
         element: <AddVacationPage />,
+      },
+      {
+        path: "edit-vacation",
+        element: <EditVacation />,
       },
     ],
   },
@@ -169,24 +173,26 @@ function ResponsiveAppBar() {
             ))}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-            {user && <Tooltip title="Open settings">
-              <p
-                onClick={handleOpenUserMenu}
-                style={{
-                  marginBlock: "auto",
-                  width: "50px",
-                  height: "50px",
-                  borderRadius: "50%",
-                  background: "gray",
-                  color: "white",
-                  fontSize: "20px",
-                  display: "grid",
-                  placeItems: "center",
-                }}
-              >
-                {user?.first_name.charAt(0).toUpperCase()}
-              </p>
-            </Tooltip>}
+            {user && (
+              <Tooltip title="Open settings">
+                <p
+                  onClick={handleOpenUserMenu}
+                  style={{
+                    marginBlock: "auto",
+                    width: "50px",
+                    height: "50px",
+                    borderRadius: "50%",
+                    background: "gray",
+                    color: "white",
+                    fontSize: "20px",
+                    display: "grid",
+                    placeItems: "center",
+                  }}
+                >
+                  {user?.first_name.charAt(0).toUpperCase()}
+                </p>
+              </Tooltip>
+            )}
             <Menu
               sx={{ mt: "45px" }}
               id="menu-appbar"

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   MDBCard,
   MDBCardBody,
@@ -10,9 +10,12 @@ import {
 } from "mdb-react-ui-kit";
 import { SendToApiVacations } from "./service";
 import AuthGuarded from "../../AuthGuard";
+import { useAuth } from "../../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function VacationsPage() {
   interface Vacation {
+    vacation_photo: string;
     destination: string;
     description: string;
     start_date: string;
@@ -20,6 +23,7 @@ function VacationsPage() {
     price: number;
   }
 
+  const { user } = useAuth();
   const [vacations, setVacations] = useState<Vacation[]>([]);
   const [likes, setLikes] = useState<number[]>([]);
   const [liked, setLiked] = useState<boolean[]>([]);
@@ -28,6 +32,7 @@ function VacationsPage() {
   const [showActive, setShowActive] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const vacationsPerPage = 10;
+  const nav = useNavigate();
 
   useEffect(() => {
     async function fetchVacations() {
@@ -99,6 +104,78 @@ function VacationsPage() {
   );
 
   const totalPages = Math.ceil(filteredVacations.length / vacationsPerPage);
+
+  const CardActions = useCallback(
+    ({ index }: { index: number }) => {
+      if (user?.role === "admin") {
+        return (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "1rem",
+              position: "absolute",
+              top: "10px",
+              left: "10px",
+              zIndex: 1,
+            }}
+          >
+            <button
+              onClick={() =>
+                nav("/edit-vacation", { state: currentVacations[index] })
+              }
+              style={{
+                cursor: "pointer",
+                borderRadius: "2rem",
+                padding: ".5rem",
+                border: "1px solid lightgray",
+              }}
+            >
+              Edit
+            </button>
+            <button
+              style={{
+                cursor: "pointer",
+                borderRadius: "2rem",
+                padding: ".5rem",
+                border: "1px solid lightgray",
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        );
+      }
+      return (
+        <button
+          type="button"
+          className="btn btn-outline-success btn-floating"
+          data-mdb-ripple-init
+          data-mdb-ripple-color="dark"
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "10px",
+            zIndex: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            border: "none",
+            display: "flex",
+            alignItems: "center",
+          }}
+          onClick={() => handleLike(index)}
+        >
+          <i
+            className="fas fa-star"
+            style={{ color: liked[index] ? "yellow" : "white" }}
+          ></i>
+          <span style={{ marginLeft: "2px", color: "white" }}>
+            {likes[index]}
+          </span>
+        </button>
+      );
+    },
+    [likes, liked, handleLike, user, currentVacations]
+  );
 
   return (
     <div>
@@ -186,35 +263,11 @@ function VacationsPage() {
               className="bg-image hover-overlay"
             >
               <MDBCardImage
-                src="https://mdbootstrap.com/img/new/standard/nature/111.webp"
+                src={`http://localhost:3002/uploads/${vacation.vacation_photo}`}
                 fluid
                 alt="..."
               />
-              <button
-                type="button"
-                className="btn btn-outline-success btn-floating"
-                data-mdb-ripple-init
-                data-mdb-ripple-color="dark"
-                style={{
-                  position: "absolute",
-                  top: "10px",
-                  left: "10px",
-                  zIndex: 1,
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                  border: "none",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-                onClick={() => handleLike(index)}
-              >
-                <i
-                  className="fas fa-star"
-                  style={{ color: liked[index] ? "yellow" : "white" }}
-                ></i>
-                <span style={{ marginLeft: "2px", color: "white" }}>
-                  {likes[index]}
-                </span>
-              </button>
+              <CardActions index={index} />
               <a>
                 <div
                   className="mask"

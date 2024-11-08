@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { getVacations } from "./handlers/getVacations"; // מניח שקיימת פונקציה כזו
 import { addVacation } from "./handlers/addVacation";
+import { editVacation } from "./handlers/editVacation";
 
 const vacationsRouter = express.Router();
 
@@ -16,19 +17,37 @@ vacationsRouter.get("/vacations", async (_req: Request, res: Response) => {
 });
 
 // נתיב POST להוספת חופשה חדשה
-vacationsRouter.post("/add-vacation", async (req: Request, res: Response): Promise<void> => {
-  console.log("Request Body:", req.body);
+vacationsRouter.post(
+  "/add-vacation",
+  async (req: Request, res: Response): Promise<void> => {
+    console.log("Request Body:", req.body);
 
-  try {
-    // חילוץ הנתונים מהבקשה
-    const newVacation = extractVacation(req.body);
-    const result = await addVacation(newVacation);
-    res.json({ result });
-  } catch (error) {
-    console.log("Error in addVacation:", error);
-    res.status(400).json({ error: "Something went wrong" });
+    try {
+      // חילוץ הנתונים מהבקשה
+      const newVacation = extractVacation(req.body);
+      const result = await addVacation(newVacation);
+      res.json({ result });
+    } catch (error) {
+      console.log("Error in addVacation:", error);
+      res.status(400).json({ error: "Something went wrong" });
+    }
   }
-});
+);
+vacationsRouter.put(
+  "/edit-vacation",
+  async (req: Request, res: Response): Promise<void> => {
+    console.log("Request Body:", req.body);
+
+    try {
+      // חילוץ הנתונים מהבקשה
+      const result = await editVacation(req.body);
+      res.json({ result });
+    } catch (error) {
+      console.log("Error in editVacation:", error);
+      res.status(400).json({ error: "Something went wrong" });
+    }
+  }
+);
 
 // פונקציה לחילוץ הנתונים מתוך הבקשה
 function extractVacation(body: any) {

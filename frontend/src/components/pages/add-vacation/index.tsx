@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Stack from "@mui/material/Stack";
-import { addVacationToApi } from "./service";
+import { addVacationToApi, uploadImage } from "./service";
 import AdminGuard from "../../AdminGuard";
 
 function AddVacationPage() {
@@ -41,11 +41,11 @@ function AddVacationPage() {
     }
 
     try {
-      const vacationPhotoUrl = URL.createObjectURL(file);
+      const { filename } = await uploadImage(file);
       const response = await addVacationToApi({
         ...formData,
         price: Number(formData.price),
-        vacation_photo: vacationPhotoUrl,
+        vacation_photo: filename,
       });
       setMessage("Vacation added successfully!");
       console.log("Vacation added successfully:", response);

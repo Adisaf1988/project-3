@@ -21,7 +21,7 @@ export function AuthContextProvider({
   children: React.ReactNode;
 }) {
   const [user, setUser] = useState<Maybe<User>>();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<unknown>();
   const [token, setToken] = useState<Maybe<string>>(
     localStorage.getItem("token")
@@ -67,15 +67,21 @@ export function AuthContextProvider({
     if (token) {
       const fetchUser = async () => {
         try {
+          setLoading(true);
           const u = await userDetails();
           console.log(u);
           setUser(u);
         } catch (e) {
           logout();
           console.log(e);
+        } finally {
+          setLoading(false);
         }
       };
+
       fetchUser();
+    } else {
+      setLoading(false);
     }
   }, [token]);
   return (

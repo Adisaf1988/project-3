@@ -62,18 +62,28 @@ function LoginPage() {
               <form onSubmit={handleLogin} className="w-100">
                 <div className="d-flex flex-row align-items-center mb-4">
                   <MDBIcon fas icon="envelope me-3" size="lg" />
-                  <MDBInput label="Your Email" id="form2" type="email" />
+                  <MDBInput
+                    name="email"
+                    label="Your Email"
+                    id="form2"
+                    type="email"
+                  />
                 </div>
 
                 <div className="d-flex flex-row align-items-center mb-4">
                   <MDBIcon fas icon="lock me-3" size="lg" />
-                  <MDBInput label="Password" id="form3" type="password" />
+                  <MDBInput
+                    name="password"
+                    label="Password"
+                    id="form3"
+                    type="password"
+                  />
                 </div>
 
                 <MDBBtn className="mb-4" size="lg">
                   Login
                 </MDBBtn>
-                
+
                 <MDBBtn
                   href="http://localhost:5173/register"
                   className="mb-4"

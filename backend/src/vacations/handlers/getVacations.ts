@@ -7,7 +7,7 @@ export async function getVacations() {
   }
   const [vacations] = await connection.execute(`
         SELECT 
-            destination, start_date, end_date, description, price
+            *
         FROM
             vacations.all_vacations;
     `);

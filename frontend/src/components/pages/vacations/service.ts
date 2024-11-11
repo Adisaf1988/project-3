@@ -32,3 +32,18 @@ export async function SendToApiVacations() {
     throw error;
   }
 }
+
+export async function deleteVacation(vacationId: number) {
+  const url = `http://localhost:3002/api/vacations/delete-vacation/${vacationId}`;
+  console.log(`DELETE request to: ${url}`);
+
+  const response = await fetch(url, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete vacation");
+  }
+
+  return response.json();
+}

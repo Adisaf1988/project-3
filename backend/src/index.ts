@@ -19,16 +19,14 @@ app.use(bodyParser.json());
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Directory to save uploaded files
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    // Generate a unique filename
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(null, uniqueSuffix + path.extname(file.originalname));
   },
 });
 
-// Initialize the multer upload object with the storage configuration
 const upload = multer({ storage: storage });
 
 app.post("/upload", upload.single("file"), (req, res) => {
@@ -37,11 +35,9 @@ app.post("/upload", upload.single("file"), (req, res) => {
     return;
   }
 
-  // Return the URL of the uploaded file
   res.json({ filename: req.file.filename });
 });
 
-// Make the uploads folder publicly accessible
 app.use("/uploads", express.static("uploads"));
 
 app.use("/api/auth", authRouter);

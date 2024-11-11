@@ -8,7 +8,26 @@ import Stack from "@mui/material/Stack";
 import { editVactionOnApi } from "./service";
 import { uploadImage } from "../add-vacation/service";
 import AdminGuard from "../../AdminGuard";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { z } from "zod";
+
+const vacationSchema = z.object({
+  destination: z.string().min(1, "Destination is required"),
+  description: z.string().min(1, "Description is required"),
+  start_date: z.string().refine((date) => !isNaN(new Date(date).getTime()), {
+    message: "Start date is required",
+  }),
+  end_date: z.string().refine((date) => {
+    const startDate = new Date(ctx?.parent?.start_date || "");
+    const endDate = new Date(date);
+    return endDate <= startDate;
+  }, "End date must not be earlier than start date"),
+  price: z
+    .number()
+    .min(0, "Price cannot be negative")
+    .max(10000, "Price cannot exceed 10,000"),
+  vacation_photo: z.string().optional(),
+});
 
 function EditVacationPage() {
   const location = useLocation();
@@ -30,6 +49,7 @@ function EditVacationPage() {
       nav("/vacations");
     }
   }, [location]);
+
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
 
@@ -48,12 +68,15 @@ function EditVacationPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file) {
-      setMessage("Please upload a cover image.");
-      return;
-    }
 
     try {
+      vacationSchema.parse(formData);
+
+      if (!file) {
+        setMessage("Please upload a cover image.");
+        return;
+      }
+
       const { filename } = await uploadImage(file);
       const response = await editVactionOnApi({
         ...formData,
@@ -63,15 +86,15 @@ function EditVacationPage() {
       setMessage("Vacation edited successfully!");
       console.log("Vacation edited successfully:", response);
     } catch (error) {
-      if (error instanceof Error) {
-        setMessage(error.message);
-        console.error("Editing vacation failed:", error.message);
+      if (error instanceof z.ZodError) {
+        setMessage(error.errors.map((e) => e.message).join(", "));
       } else {
         setMessage("An unknown error occurred.");
         console.error("Editing vacation failed:", error);
       }
     }
   };
+
   const formatDate = (d: string) => {
     const dateString = new Date(d).toLocaleDateString().split("/");
     let tmp = dateString[2];

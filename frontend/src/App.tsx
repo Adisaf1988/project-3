@@ -59,7 +59,7 @@ function App() {
 }
 
 const pages = ["vacations", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["Profile", "Logout"];
 
 function ResponsiveAppBar() {
   const { logout, user } = useAuth();

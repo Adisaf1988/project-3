@@ -2,10 +2,10 @@ import express, { Request, Response } from "express";
 import { getVacations } from "./handlers/getVacations"; // מניח שקיימת פונקציה כזו
 import { addVacation } from "./handlers/addVacation";
 import { editVacation } from "./handlers/editVacation";
+import { deleteVacation } from "./handlers/deleteVacation";
 
 const vacationsRouter = express.Router();
 
-// נתיב GET לקבלת כל החופשות
 vacationsRouter.get("/vacations", async (_req: Request, res: Response) => {
   try {
     const data = await getVacations();
@@ -16,14 +16,12 @@ vacationsRouter.get("/vacations", async (_req: Request, res: Response) => {
   }
 });
 
-// נתיב POST להוספת חופשה חדשה
 vacationsRouter.post(
   "/add-vacation",
   async (req: Request, res: Response): Promise<void> => {
     console.log("Request Body:", req.body);
 
     try {
-      // חילוץ הנתונים מהבקשה
       const newVacation = extractVacation(req.body);
       const result = await addVacation(newVacation);
       res.json({ result });
@@ -39,7 +37,6 @@ vacationsRouter.put(
     console.log("Request Body:", req.body);
 
     try {
-      // חילוץ הנתונים מהבקשה
       const result = await editVacation(req.body);
       res.json({ result });
     } catch (error) {
@@ -49,7 +46,21 @@ vacationsRouter.put(
   }
 );
 
-// פונקציה לחילוץ הנתונים מתוך הבקשה
+vacationsRouter.delete(
+  "/delete-vacation/:id",
+  async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    console.log(`Received delete request for vacationId: ${id}`);
+    try {
+      const result = await deleteVacation(Number(id));
+      res.json({ result });
+    } catch (error) {
+      console.log("Error in deleteVacation:", error);
+      res.status(400).json({ error: "Something went wrong" });
+    }
+  }
+);
+
 function extractVacation(body: any) {
   const {
     destination,

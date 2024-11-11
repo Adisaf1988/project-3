@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -9,6 +10,7 @@ import { addVacationToApi, uploadImage } from "./service";
 import AdminGuard from "../../AdminGuard";
 
 function AddVacationPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     destination: "",
     description: "",
@@ -48,6 +50,7 @@ function AddVacationPage() {
         vacation_photo: filename,
       });
       setMessage("Vacation added successfully!");
+      navigate("/vacations"); // Redirect to the Vacations page after success
       console.log("Vacation added successfully:", response);
     } catch (error) {
       if (error instanceof Error) {

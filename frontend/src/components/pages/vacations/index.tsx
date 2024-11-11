@@ -8,13 +8,14 @@ import {
   MDBBtn,
   MDBRipple,
 } from "mdb-react-ui-kit";
-import { SendToApiVacations } from "./service";
+import { deleteVacation, SendToApiVacations } from "./service";
 import AuthGuarded from "../../AuthGuard";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 function VacationsPage() {
   interface Vacation {
+    id: number;
     vacation_photo: string;
     destination: string;
     description: string;
@@ -78,6 +79,16 @@ function VacationsPage() {
     setCurrentPage(pageNumber);
   };
 
+  const handleDelete = async (vacationId: number) => {
+    console.log("Vacation ID to delete:", vacationId);
+    try {
+      const response = await deleteVacation(vacationId);
+      console.log("Delete response:", response);
+    } catch (error) {
+      console.error("Error deleting vacation:", error);
+    }
+  };
+
   const clearFilters = () => {
     setShowOnlyFollowed(false);
     setShowNotStarted(false);
@@ -134,6 +145,10 @@ function VacationsPage() {
               Edit
             </button>
             <button
+              onClick={() => {
+                console.log("Current vacation:", currentVacations[index]); // הוספת לוג
+                handleDelete(currentVacations[index].id);
+              }}
               style={{
                 cursor: "pointer",
                 borderRadius: "2rem",
@@ -248,6 +263,7 @@ function VacationsPage() {
       >
         Clear Filters
       </button>
+
       <div
         style={{
           display: "grid",
@@ -275,39 +291,47 @@ function VacationsPage() {
                 ></div>
               </a>
             </MDBRipple>
-            <MDBCardBody>
-              <MDBCardTitle>
-                <strong>{vacation.destination}</strong>
-              </MDBCardTitle>
-              <MDBCardText>
-                {vacation.description}
-                <br />
-                {formatDate(vacation.start_date)} -{" "}
-                {formatDate(vacation.end_date)}
-              </MDBCardText>
-              <MDBBtn style={{ fontSize: "1rem" }}>
+            <MDBCardBody
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <div>
+                <MDBCardTitle>
+                  <strong>{vacation.destination}</strong>
+                </MDBCardTitle>
+                <MDBCardText>
+                  {vacation.description}
+                  <br />
+                  {formatDate(vacation.start_date)} -{" "}
+                  {formatDate(vacation.end_date)}
+                </MDBCardText>
+              </div>
+              <MDBBtn style={{ fontSize: "1rem", marginTop: "auto" }}>
                 Price: {vacation.price}$
               </MDBBtn>
             </MDBCardBody>
           </MDBCard>
         ))}
       </div>
-      <div style={{ marginTop: "20px", textAlign: "center" }}>
-        {Array.from({ length: totalPages }, (_, index) => (
+      <div style={{ marginTop: "20px" }}>
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
           <button
-            key={index}
-            onClick={() => handlePageChange(index + 1)}
+            key={page}
+            onClick={() => handlePageChange(page)}
             style={{
               margin: "0 5px",
               padding: "5px 10px",
-              backgroundColor: currentPage === index + 1 ? "#007bff" : "#fff",
-              color: currentPage === index + 1 ? "#fff" : "#000",
-              border: "1px solid #007bff",
-              borderRadius: "5px",
+              backgroundColor: currentPage === page ? "#007bff" : "#ddd",
+              color: currentPage === page ? "#fff" : "#000",
+              border: "none",
+              borderRadius: "3px",
               cursor: "pointer",
             }}
           >
-            {index + 1}
+            {page}
           </button>
         ))}
       </div>

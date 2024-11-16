@@ -3,6 +3,7 @@ import { getVacations } from "./handlers/getVacations"; // מניח שקיימת
 import { addVacation } from "./handlers/addVacation";
 import { editVacation } from "./handlers/editVacation";
 import { deleteVacation } from "./handlers/deleteVacation";
+import { follow } from "./handlers/favoriteVacations";
 
 const vacationsRouter = express.Router();
 
@@ -39,6 +40,19 @@ vacationsRouter.put(
     try {
       const result = await editVacation(req.body);
       res.json({ result });
+    } catch (error) {
+      console.log("Error in editVacation:", error);
+      res.status(400).json({ error: "Something went wrong" });
+    }
+  }
+);
+
+vacationsRouter.post(
+  "/follow",
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const result = await follow(req.body.vacationId, req.body.userId);
+      res.status(200).json({ result });
     } catch (error) {
       console.log("Error in editVacation:", error);
       res.status(400).json({ error: "Something went wrong" });

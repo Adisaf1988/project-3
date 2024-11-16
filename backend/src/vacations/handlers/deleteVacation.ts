@@ -9,7 +9,7 @@ export async function deleteVacation(vacationId: number) {
     const [result]: any = await connection?.execute(query, [vacationId]);
     console.log("Delete Result:", result);
 
-    if (result.affectedRows > 0) {
+    if (result.serverStatus === 2) {
       return { message: "Vacation deleted successfully" };
     } else {
       throw new Error("Deletion failed, no rows affected.");

@@ -8,7 +8,7 @@ import {
   MDBBtn,
   MDBRipple,
 } from "mdb-react-ui-kit";
-import { deleteVacation, SendToApiVacations } from "./service";
+import { deleteVacation, followVacation, SendToApiVacations } from "./service";
 import AuthGuarded from "../../AuthGuard";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -83,6 +83,20 @@ function VacationsPage() {
     console.log("Vacation ID to delete:", vacationId);
     try {
       const response = await deleteVacation(vacationId);
+
+      setVacations(vacations.filter((v) => v.id !== vacationId));
+      console.log("Delete response:", response);
+    } catch (error) {
+      console.error("Error deleting vacation:", error);
+    }
+  };
+
+  const follow = async (vacationId: number) => {
+    console.log("Vacation ID to delete:", vacationId);
+    try {
+      const response = await followVacation(vacationId, +user!.users_id);
+
+      setVacations(vacations.filter((v) => v.id !== vacationId));
       console.log("Delete response:", response);
     } catch (error) {
       console.error("Error deleting vacation:", error);

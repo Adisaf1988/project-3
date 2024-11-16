@@ -1,6 +1,7 @@
 import axios from "axios";
 
 interface Vacation {
+  id: number;
   destination: string;
   start_date: string;
   end_date: string;
@@ -17,6 +18,7 @@ export async function SendToApiVacations() {
 
     const data = result?.data?.vacations.map((v: Vacation) => {
       return {
+        id: v.id,
         destination: v.destination,
         start_date: new Date(v.start_date).toLocaleString(),
         end_date: new Date(v.end_date).toLocaleString(),
@@ -34,7 +36,7 @@ export async function SendToApiVacations() {
 }
 
 export async function deleteVacation(vacationId: number) {
-  const url = `http://localhost:3002/api/vacations/delete-vacation/${vacationId}`;
+  const url = `http://localhost:3002/api/delete-vacation/${vacationId}`;
   console.log(`DELETE request to: ${url}`);
 
   const response = await fetch(url, {
@@ -46,4 +48,17 @@ export async function deleteVacation(vacationId: number) {
   }
 
   return response.json();
+}
+
+export async function followVacation(vacationId: number, userId: number) {
+  const url = `http://localhost:3002/api/follow/`;
+  console.log(`DELETE request to: ${url}`);
+
+  const result = await axios.post(url, { vacationId, userId });
+
+  if (result.status !== 200) {
+    throw new Error("Failed to delete vacation");
+  }
+
+  return result.data;
 }

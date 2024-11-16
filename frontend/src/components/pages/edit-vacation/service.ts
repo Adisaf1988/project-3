@@ -10,9 +10,10 @@ interface EditVacation {
   vacation_photo: string;
 }
 
-export async function editVactionOnApi(vacation: EditVacation) {
-  const url = `http://localhost:3002/api/edit-vacation/${vacation.id}`;
+export async function editVacationOnApi(vacation: EditVacation) {
+  const url = `http://localhost:3002/api/edit-vacation`;
   const vacationPost = {
+    id: vacation.id,
     destination: vacation.destination,
     description: vacation.description,
     start_date: vacation.start_date,

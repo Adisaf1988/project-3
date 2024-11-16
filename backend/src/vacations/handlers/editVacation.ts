@@ -11,17 +11,26 @@ interface Vacation {
 }
 
 export async function editVacation(vacation: Vacation) {
-  const query = `UPDATE vacations.all_vacations (destination, description, start_date, end_date, price, vacation_photo)
+  const query = `UPDATE vacations.all_vacations
                  SET destination = ?, description = ?, start_date = ?, end_date = ?, price = ?, vacation_photo = ?
                  WHERE id = ?`;
   const connection = await getConnection();
 
   try {
+    const formattedStartDate = new Date(vacation.start_date)
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
+    const formattedEndDate = new Date(vacation.end_date)
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
+
     const [result]: any = await connection?.execute(query, [
       vacation.destination,
       vacation.description,
-      vacation.start_date,
-      vacation.end_date,
+      formattedStartDate,
+      formattedEndDate,
       vacation.price,
       vacation.vacation_photo,
       vacation.id,

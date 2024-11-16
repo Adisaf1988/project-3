@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Stack from "@mui/material/Stack";
-import { editVactionOnApi } from "./service";
+import { editVacationOnApi } from "./service";
 import { uploadImage } from "../add-vacation/service";
 import AdminGuard from "../../AdminGuard";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -13,15 +13,12 @@ import { z } from "zod";
 
 const vacationSchema = z.object({
   destination: z.string().min(1, "Destination is required"),
-  description: z.string().min(1, "Description is required"),
   start_date: z.string().refine((date) => !isNaN(new Date(date).getTime()), {
     message: "Start date is required",
   }),
-  end_date: z.string().refine((date) => {
-    const startDate = new Date(ctx?.parent?.start_date || "");
-    const endDate = new Date(date);
-    return endDate <= startDate;
-  }, "End date must not be earlier than start date"),
+  end_date: z.string().refine((date) => !isNaN(new Date(date).getTime()), {
+    message: "end date is required",
+  }),
   price: z
     .number()
     .min(0, "Price cannot be negative")
@@ -44,6 +41,7 @@ function EditVacationPage() {
     }),
   });
 
+  console.log(formData);
   useEffect(() => {
     if (!location || !location.state) {
       nav("/vacations");
@@ -70,21 +68,35 @@ function EditVacationPage() {
     e.preventDefault();
 
     try {
-      vacationSchema.parse(formData);
-
-      if (!file) {
-        setMessage("Please upload a cover image.");
+      const res = vacationSchema.parse({ ...formData, price: +formData.price });
+      if (
+        new Date(res.end_date).getTime() < new Date(res.start_date).getTime()
+      ) {
+        setMessage("End date cannot be earlier than start date!");
         return;
       }
+      /*if (!file) {
+        setMessage("Please upload a cover image.");
+        return;
+      }*/
+      if (file) {
+        const { filename } = await uploadImage(file);
+        await editVacationOnApi({
+          ...formData,
+          price: Number(formData.price),
+          vacation_photo: filename,
+        });
+      } else {
+        await editVacationOnApi({
+          ...formData,
+          price: Number(formData.price),
+        });
+      }
 
-      const { filename } = await uploadImage(file);
-      const response = await editVactionOnApi({
-        ...formData,
-        price: Number(formData.price),
-        vacation_photo: filename,
-      });
       setMessage("Vacation edited successfully!");
-      console.log("Vacation edited successfully:", response);
+      setTimeout(() => {
+        nav("/vacations");
+      }, 1000);
     } catch (error) {
       if (error instanceof z.ZodError) {
         setMessage(error.errors.map((e) => e.message).join(", "));

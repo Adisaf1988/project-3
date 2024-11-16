@@ -13,7 +13,7 @@ export default function AdminGuard<T extends JSX.IntrinsicAttributes>(
     if (loading) {
       return <div>Loading...</div>;
     }
-    if (user?.role === "user") {
+    if (user?.role !== "admin") {
       return <Navigate to="/vacations" />;
     }
 

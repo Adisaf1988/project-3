@@ -80,6 +80,9 @@ function VacationsPage() {
   };
 
   const handleDelete = async (vacationId: number) => {
+    const isConfirmed = window.confirm("Are you sure you want to delete this vacation?");
+    if (!isConfirmed) return;
+
     console.log("Vacation ID to delete:", vacationId);
     try {
       const response = await deleteVacation(vacationId);
@@ -206,11 +209,26 @@ function VacationsPage() {
     [likes, liked, handleLike, user, currentVacations]
   );
 
-
-  
   return (
     <div>
-      <div className="form-check form-check-inline">
+      {user?.role === "admin" && (
+        <button
+          onClick={() => nav("/add-vacation")}
+          style={{
+            margin: "15px auto",
+            padding: "10px 20px",
+            backgroundColor: "rgb(0, 123, 255)",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            display: "block",
+          }}
+        >
+          Add Vacation
+        </button>
+      )}
+      {/* <div className="form-check form-check-inline">
         <input
           style={{ marginTop: 15, marginBottom: 15 }}
           className="form-check-input"
@@ -227,7 +245,28 @@ function VacationsPage() {
         >
           Show Only Followed Vacations
         </label>
-      </div>
+      </div> */}
+      {user?.role !== "admin" && (
+  <div className="form-check form-check-inline">
+    <input
+      style={{ marginTop: 15, marginBottom: 15 }}
+      className="form-check-input"
+      type="checkbox"
+      id="inlineCheckbox1"
+      value="option1"
+      checked={showOnlyFollowed}
+      onChange={handleFilterChange}
+    />
+    <label
+      style={{ marginTop: 10 }}
+      className="form-check-label"
+      htmlFor="inlineCheckbox1"
+    >
+      Show Only Followed Vacations
+    </label>
+  </div>
+)}
+
 
       <div className="form-check form-check-inline">
         <input

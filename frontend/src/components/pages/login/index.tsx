@@ -84,13 +84,15 @@ function LoginPage() {
                   Login
                 </MDBBtn>
 
-                <MDBBtn
-                  href="http://localhost:5173/register"
-                  className="mb-4"
-                  size="lg"
-                >
-                  Don't have an account? Register now!
-                </MDBBtn>
+                <div>
+                  <MDBBtn
+                    href="http://localhost:5173/register"
+                    className="mb-4"
+                    size="lg"
+                  >
+                    Don't have an account? Register now!
+                  </MDBBtn>
+                </div>
 
                 {message && <p>{message}</p>}
               </form>

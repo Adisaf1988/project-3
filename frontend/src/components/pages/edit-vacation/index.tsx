@@ -190,7 +190,7 @@ function EditVacationPage() {
       <Box sx={{ height: 16 }} />
       <InputFileUpload handleFileChange={handleFileChange} />
       <Box sx={{ height: 16 }} />
-      <BasicButtons />
+      <BasicButtons nav={nav} />
       {message && <Typography variant="body1">{message}</Typography>}
     </Box>
   );
@@ -217,13 +217,13 @@ export function InputFileUpload({
   );
 }
 
-export function BasicButtons() {
+export function BasicButtons({ nav }: { nav: ReturnType<typeof useNavigate> }) {
   return (
     <Stack spacing={2} direction="row">
       <Button type="submit" variant="contained">
         Save Changes
       </Button>
-      <Button variant="outlined">Cancel</Button>
+      <Button variant="outlined" onClick={() => nav("/vacations")}>Cancel</Button>
     </Stack>
   );
 }

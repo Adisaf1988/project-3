@@ -58,7 +58,7 @@ function App() {
   );
 }
 
-const pages = ["vacations", "Pricing", "Blog"];
+const pages = ["vacations", "Blog", "FAQ"];
 const settings = ["Profile", "Logout"];
 
 function ResponsiveAppBar() {

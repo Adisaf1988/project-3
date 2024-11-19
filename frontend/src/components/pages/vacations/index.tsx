@@ -206,6 +206,8 @@ function VacationsPage() {
     [likes, liked, handleLike, user, currentVacations]
   );
 
+
+  
   return (
     <div>
       <div className="form-check form-check-inline">

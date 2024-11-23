@@ -52,13 +52,12 @@ export async function deleteVacation(vacationId: number) {
 
 export async function followVacation(vacationId: number, userId: number) {
   const url = `http://localhost:3002/api/follow/`;
-  console.log(`DELETE request to: ${url}`);
 
   const result = await axios.post(url, { vacationId, userId });
 
   if (result.status !== 200) {
-    throw new Error("Failed to delete vacation");
+    throw new Error("Failed to toggle follow vacation");
   }
 
-  return result.data;
+  return result.data.result;
 }

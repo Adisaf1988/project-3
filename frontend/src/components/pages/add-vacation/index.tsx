@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Stack from "@mui/material/Stack";
 import { addVacationToApi, uploadImage } from "./service";
+
 import AdminGuard from "../../AdminGuard";
 
 function AddVacationPage() {
@@ -50,7 +51,7 @@ function AddVacationPage() {
         vacation_photo: filename,
       });
       setMessage("Vacation added successfully!");
-      navigate("/vacations"); // Redirect to the Vacations page after success
+      navigate("/vacations");
       console.log("Vacation added successfully:", response);
     } catch (error) {
       if (error instanceof Error) {
@@ -155,12 +156,15 @@ export function InputFileUpload({
 }
 
 export function BasicButtons() {
+  const navigate = useNavigate();
   return (
     <Stack spacing={2} direction="row">
       <Button type="submit" variant="contained">
         Add vacation
       </Button>
-      <Button variant="outlined">Cancel</Button>
+      <Button variant="outlined" onClick={() => navigate("/vacations")}>
+        Cancel
+      </Button>
     </Stack>
   );
 }

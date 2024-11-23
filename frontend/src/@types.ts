@@ -18,8 +18,20 @@ export interface RegisterData {
   email: string;
   password: string;
 }
-
+export interface FollowData {
+  destination: string;
+  follows: number;
+}
 export interface LoginData {
   email: string;
   password: string;
+}
+export interface Vacation {
+  id: number;
+  vacation_photo: string;
+  destination: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+  price: number;
 }

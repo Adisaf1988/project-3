@@ -24,8 +24,16 @@ export const userDetailsHandler = async (req: Request, res: Response) => {
       "SELECT * FROM vacations.users WHERE users_id = ?",
       [uid]
     );
+
     const [rows]: any = result;
-    res.status(200).json(rows[0]);
+
+    const resultVacationsFollowed = await connection?.execute(
+      "SELECT V.* FROM vacations.followers F INNER JOIN vacations.all_vacations V ON V.id = F.vacation_id WHERE F.followers_id = ?",
+      [uid]
+    );
+
+    const [rowsFollows]: any = resultVacationsFollowed;
+    res.status(200).json({ user: rows[0], follows: rowsFollows });
   } catch (error) {
     console.log(error);
     if (error instanceof z.ZodError) {

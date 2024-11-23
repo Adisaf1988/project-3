@@ -1,5 +1,9 @@
 import "./App.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  useNavigate,
+} from "react-router-dom";
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -20,6 +24,7 @@ import LoginPage from "./components/pages/login";
 import AddVacationPage from "./components/pages/add-vacation";
 import { useAuth } from "./context/AuthContext";
 import EditVacation from "./components/pages/edit-vacation";
+import VacationsReports from "./components/pages/reports";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +51,10 @@ const router = createBrowserRouter([
         path: "edit-vacation",
         element: <EditVacation />,
       },
+      {
+        path: "vacations-reports",
+        element: <VacationsReports />,
+      },
     ],
   },
 ]);
@@ -58,7 +67,6 @@ function App() {
   );
 }
 
-const pages = ["vacations", "Blog", "FAQ"];
 const settings = ["Profile", "Logout"];
 
 function ResponsiveAppBar() {
@@ -84,6 +92,32 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  const nav = useNavigate();
+  const pages = [
+    {
+      name: "vacations",
+      click: () => {
+        nav("/vacations");
+      },
+      admin: false,
+    },
+    { name: "Blog", click: () => {}, admin: false },
+    { name: "FAQ", click: () => {}, admin: false },
+    {
+      name: "Add Vacation",
+      click: () => {
+        nav("/add-vacation");
+      },
+      admin: true,
+    },
+    {
+      name: "Reports",
+      click: () => {
+        nav("/vacations-reports");
+      },
+      admin: true,
+    },
+  ];
 
   return (
     <AppBar position="static">
@@ -94,7 +128,7 @@ function ResponsiveAppBar() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/vacations"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -135,11 +169,19 @@ function ResponsiveAppBar() {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: "block", md: "none" } }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: "center" }}>{page}</Typography>
-                </MenuItem>
-              ))}
+              {pages
+                .filter((p) => user?.role === "admin" || !p.admin)
+                .map(({ name, click }) => (
+                  <MenuItem
+                    key={name}
+                    onClick={() => {
+                      handleCloseNavMenu();
+                      click();
+                    }}
+                  >
+                    <Typography sx={{ textAlign: "center" }}>{name}</Typography>
+                  </MenuItem>
+                ))}
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
@@ -162,15 +204,20 @@ function ResponsiveAppBar() {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                {page}
-              </Button>
-            ))}
+            {pages
+              .filter((p) => user?.role === "admin" || !p.admin)
+              .map(({ name, click }) => (
+                <Button
+                  key={name}
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    click();
+                  }}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  {name}
+                </Button>
+              ))}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             {user && (
@@ -213,7 +260,6 @@ function ResponsiveAppBar() {
                 <MenuItem
                   key={setting}
                   onClick={() => {
-                    // handle the setting
                     if (setting == "Logout") {
                       const confirmed = confirm(
                         "Are you sure you want to log out?"

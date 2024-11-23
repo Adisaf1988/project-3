@@ -1,5 +1,5 @@
 import axios from "axios";
-import { LoginData, Token, User } from "../../../@types";
+import { LoginData, Token, User, Vacation } from "../../../@types";
 
 const API_BASE_URL = "http://localhost:3002";
 
@@ -18,7 +18,10 @@ export const loginUser = async (data: LoginData) => {
 export const userDetails = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/api/auth/userDetails`);
-    return response.data as User;
+    return response.data as {
+      user: User;
+      follows: Array<Vacation>;
+    };
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message || "me failed");

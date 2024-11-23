@@ -12,22 +12,11 @@ import { deleteVacation, followVacation, SendToApiVacations } from "./service";
 import AuthGuarded from "../../AuthGuard";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Vacation } from "../../../@types";
 
 function VacationsPage() {
-  interface Vacation {
-    id: number;
-    vacation_photo: string;
-    destination: string;
-    description: string;
-    start_date: string;
-    end_date: string;
-    price: number;
-  }
-
-  const { user } = useAuth();
+  const { user, addFollow, followedVacations } = useAuth();
   const [vacations, setVacations] = useState<Vacation[]>([]);
-  const [likes, setLikes] = useState<number[]>([]);
-  const [liked, setLiked] = useState<boolean[]>([]);
   const [showOnlyFollowed, setShowOnlyFollowed] = useState<boolean>(false);
   const [showNotStarted, setShowNotStarted] = useState<boolean>(false);
   const [showActive, setShowActive] = useState<boolean>(false);
@@ -39,8 +28,6 @@ function VacationsPage() {
     async function fetchVacations() {
       const data = await SendToApiVacations();
       setVacations(data);
-      setLikes(new Array(data.length).fill(0));
-      setLiked(new Array(data.length).fill(false));
     }
     fetchVacations();
   }, []);
@@ -48,19 +35,6 @@ function VacationsPage() {
   const formatDate = (dateString: string) => {
     const options = { year: "numeric", month: "long", day: "numeric" } as const;
     return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  const handleLike = (index: number) => {
-    const newLikes = [...likes];
-    const newLiked = [...liked];
-    if (newLiked[index]) {
-      newLikes[index]--;
-    } else {
-      newLikes[index]++;
-    }
-    newLiked[index] = !newLiked[index];
-    setLikes(newLikes);
-    setLiked(newLiked);
   };
 
   const handleFilterChange = () => {
@@ -80,7 +54,9 @@ function VacationsPage() {
   };
 
   const handleDelete = async (vacationId: number) => {
-    const isConfirmed = window.confirm("Are you sure you want to delete this vacation?");
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this vacation?"
+    );
     if (!isConfirmed) return;
 
     console.log("Vacation ID to delete:", vacationId);
@@ -98,9 +74,7 @@ function VacationsPage() {
     console.log("Vacation ID to delete:", vacationId);
     try {
       const response = await followVacation(vacationId, +user!.users_id);
-
-      setVacations(vacations.filter((v) => v.id !== vacationId));
-      console.log("Delete response:", response);
+      addFollow(vacations.find((v) => v.id == vacationId)!);
     } catch (error) {
       console.error("Error deleting vacation:", error);
     }
@@ -113,7 +87,9 @@ function VacationsPage() {
   };
 
   const filteredVacations = vacations.filter((vacation, index) => {
-    const isFollowed = showOnlyFollowed ? liked[index] : true;
+    const isFollowed = showOnlyFollowed
+      ? followedVacations.some((v) => v.id == vacation.id)
+      : true;
     const isNotStarted = showNotStarted
       ? new Date(vacation.start_date) > new Date()
       : true;
@@ -194,19 +170,23 @@ function VacationsPage() {
             display: "flex",
             alignItems: "center",
           }}
-          onClick={() => handleLike(index)}
+          onClick={() => follow(currentVacations[index].id)}
         >
           <i
             className="fas fa-star"
-            style={{ color: liked[index] ? "yellow" : "white" }}
+            style={{
+              color: followedVacations.some(
+                (v) => v.id === currentVacations[index].id
+              )
+                ? "yellow"
+                : "white",
+            }}
           ></i>
-          <span style={{ marginLeft: "2px", color: "white" }}>
-            {likes[index]}
-          </span>
+          <span style={{ marginLeft: "2px", color: "white" }}></span>
         </button>
       );
     },
-    [likes, liked, handleLike, user, currentVacations]
+    [followedVacations, follow, vacations, user, currentVacations]
   );
 
   return (
@@ -228,45 +208,27 @@ function VacationsPage() {
           Add Vacation
         </button>
       )}
-      {/* <div className="form-check form-check-inline">
-        <input
-          style={{ marginTop: 15, marginBottom: 15 }}
-          className="form-check-input"
-          type="checkbox"
-          id="inlineCheckbox1"
-          value="option1"
-          checked={showOnlyFollowed}
-          onChange={handleFilterChange}
-        />
-        <label
-          style={{ marginTop: 10 }}
-          className="form-check-label"
-          htmlFor="inlineCheckbox1"
-        >
-          Show Only Followed Vacations
-        </label>
-      </div> */}
-      {user?.role !== "admin" && (
-  <div className="form-check form-check-inline">
-    <input
-      style={{ marginTop: 15, marginBottom: 15 }}
-      className="form-check-input"
-      type="checkbox"
-      id="inlineCheckbox1"
-      value="option1"
-      checked={showOnlyFollowed}
-      onChange={handleFilterChange}
-    />
-    <label
-      style={{ marginTop: 10 }}
-      className="form-check-label"
-      htmlFor="inlineCheckbox1"
-    >
-      Show Only Followed Vacations
-    </label>
-  </div>
-)}
 
+      {user?.role !== "admin" && (
+        <div className="form-check form-check-inline">
+          <input
+            style={{ marginTop: 15, marginBottom: 15 }}
+            className="form-check-input"
+            type="checkbox"
+            id="inlineCheckbox1"
+            value="option1"
+            checked={showOnlyFollowed}
+            onChange={handleFilterChange}
+          />
+          <label
+            style={{ marginTop: 10 }}
+            className="form-check-label"
+            htmlFor="inlineCheckbox1"
+          >
+            Show Only Followed Vacations
+          </label>
+        </div>
+      )}
 
       <div className="form-check form-check-inline">
         <input

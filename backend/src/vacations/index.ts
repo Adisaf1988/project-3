@@ -4,6 +4,7 @@ import { addVacation } from "./handlers/addVacation";
 import { editVacation } from "./handlers/editVacation";
 import { deleteVacation } from "./handlers/deleteVacation";
 import { follow } from "./handlers/favoriteVacations";
+import { getAllFollows } from "./handlers/getFollows";
 
 const vacationsRouter = express.Router();
 
@@ -17,6 +18,19 @@ vacationsRouter.get("/vacations", async (_req: Request, res: Response) => {
   }
 });
 
+vacationsRouter.get(
+  "/follows",
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const follows = await getAllFollows();
+      console.log(follows);
+      res.json({ follows });
+    } catch (error) {
+      console.log("Error in follows:", error);
+      res.status(400).json({ error: "Something went wrong" });
+    }
+  }
+);
 vacationsRouter.post(
   "/add-vacation",
   async (req: Request, res: Response): Promise<void> => {

@@ -80,9 +80,6 @@ function AddVacationPage() {
       autoComplete="off"
       onSubmit={handleSubmit}
     >
-      <Typography variant="h4" component="h1" gutterBottom>
-        Add Vacation
-      </Typography>
       <TextField
         id="destination"
         label="Destination"

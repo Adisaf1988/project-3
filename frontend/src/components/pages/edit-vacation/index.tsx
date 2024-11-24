@@ -75,10 +75,7 @@ function EditVacationPage() {
         setMessage("End date cannot be earlier than start date!");
         return;
       }
-      /*if (!file) {
-        setMessage("Please upload a cover image.");
-        return;
-      }*/
+ 
       if (file) {
         const { filename } = await uploadImage(file);
         await editVacationOnApi({
@@ -140,9 +137,7 @@ function EditVacationPage() {
       autoComplete="off"
       onSubmit={handleSubmit}
     >
-      <Typography variant="h4" component="h1" gutterBottom>
-        Edit Vacation
-      </Typography>
+    
       <TextField
         id="destination"
         label="Destination"

@@ -45,8 +45,6 @@ function VacationsReports() {
 
   return (
     <div>
-      <h1> Vacations Reports</h1>
-
       <BarChart
         series={[{ data: followData.map((f) => f.follows), color: "#1976d2" }]}
         height={290}
@@ -55,7 +53,20 @@ function VacationsReports() {
         ]}
         margin={{ top: 50, bottom: 30, left: 40, right: 10 }}
       />
-      <button onClick={() => saveReportsToCSV()}>Download to CSV</button>
+      <button
+        onClick={() => saveReportsToCSV()}
+        style={{
+          margin: "15px",
+          padding: "10px 20px",
+          backgroundColor: "#007bff",
+          color: "#fff",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        Download to CSV
+      </button>
     </div>
   );
 }

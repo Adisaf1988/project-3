@@ -25,6 +25,9 @@ import AddVacationPage from "./components/pages/add-vacation";
 import { useAuth } from "./context/AuthContext";
 import EditVacation from "./components/pages/edit-vacation";
 import VacationsReports from "./components/pages/reports";
+import HomePage from "./components/pages/home";
+import FaqPage from "./components/pages/faq";
+import BlogPage from "./components/pages/blog";
 
 const router = createBrowserRouter([
   {
@@ -32,8 +35,24 @@ const router = createBrowserRouter([
     element: <Root />,
     children: [
       {
+        index: true,
+        element: <HomePage />,
+      },
+      {
         path: "vacations",
         element: <VacationsPage />,
+      },
+      {
+        path: "home",
+        element: <HomePage />,
+      },
+      {
+        path: "faq",
+        element: <FaqPage />,
+      },
+      {
+        path: "blog",
+        element: <BlogPage />,
       },
       {
         path: "register",
@@ -101,8 +120,20 @@ function ResponsiveAppBar() {
       },
       admin: false,
     },
-    { name: "Blog", click: () => {}, admin: false },
-    { name: "FAQ", click: () => {}, admin: false },
+    {
+      name: "Blog",
+      click: () => {
+        nav("/blog");
+      },
+      admin: false,
+    },
+    {
+      name: "FAQ",
+      click: () => {
+        nav("/faq");
+      },
+      admin: false,
+    },
     {
       name: "Add Vacation",
       click: () => {
@@ -128,7 +159,7 @@ function ResponsiveAppBar() {
             variant="h6"
             noWrap
             component="a"
-            href="/vacations"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -139,7 +170,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            Vacation App
+            Home Page
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>

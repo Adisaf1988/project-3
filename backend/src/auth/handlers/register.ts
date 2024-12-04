@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { registerSchema } from "../index"; // Import validation schema
+import { registerSchema } from "../index";
 import bcrypt from "bcrypt";
 import { getConnection } from "../../database";
 import { z } from "zod";
@@ -18,11 +18,8 @@ const registerHandler = async (req: Request, res: Response) => {
       return;
     }
 
-    // Validation with Zod
     const parsedData = registerSchema.parse(req.body);
     const { firstName, lastName, email, password } = parsedData;
-
-    // Check if the email already exists in the database
 
     const [rows, fields] = await connection.execute<any[]>(
       "SELECT * FROM vacations.users WHERE email = ?",
@@ -32,10 +29,7 @@ const registerHandler = async (req: Request, res: Response) => {
       res.status(400).json({ message: "Email already exists" });
       return;
     }
-    // Encrypt the password
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Add the new user to the database
 
     const newUser = await connection?.execute(
       "INSERT INTO vacations.users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)",
@@ -48,7 +42,6 @@ const registerHandler = async (req: Request, res: Response) => {
       { expiresIn: "24h" }
     );
 
-    // Redirect to the vacations page after successful registration
     res.status(201).json({ access_token: token });
   } catch (error) {
     if (error instanceof z.ZodError) {

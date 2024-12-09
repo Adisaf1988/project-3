@@ -1,7 +1,10 @@
 import React from "react";
 import "./home.css";
+import { useNavigate } from "react-router-dom";
 
 const HomePage: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="home-container">
       <div className="image-container">
@@ -19,17 +22,13 @@ const HomePage: React.FC = () => {
           <div className="button-container">
             <button
               className="action-button"
-              onClick={() =>
-                (window.location.href = "http://localhost:5173/register")
-              }
+              onClick={() => navigate("/register")}
             >
               Register
             </button>
             <button
               className="action-button secondary"
-              onClick={() =>
-                (window.location.href = "http://localhost:5173/login")
-              }
+              onClick={() => navigate("/login")}
             >
               Login
             </button>

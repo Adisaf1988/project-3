@@ -5,7 +5,8 @@
   "scripts": {
     "run-tsc": "tsc --init",
     "dev": "nodemon ./src/index.ts",
-    "test": "mocha"
+    "test": "mocha",
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC",

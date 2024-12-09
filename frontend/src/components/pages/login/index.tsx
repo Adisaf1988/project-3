@@ -86,7 +86,7 @@ function LoginPage() {
 
                 <div>
                   <MDBBtn
-                    href="http://localhost:5173/register"
+                    onClick={() => navigate("/register")}
                     className="mb-4"
                     size="lg"
                   >

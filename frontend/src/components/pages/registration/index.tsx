@@ -12,7 +12,6 @@ import {
   MDBInput,
   MDBIcon,
 } from "mdb-react-ui-kit";
-import { registerUser } from "./service";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { RegisterData } from "../../../@types";
@@ -115,7 +114,7 @@ function RegisterPage() {
               {message && <p>{message}</p>}
 
               <MDBBtn
-                href="http://localhost:5173/login"
+                onClick={() => navigate("/login")}
                 className="mb-4"
                 size="lg"
               >

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { RegisterData, Token, User } from "../../../@types";
+import { RegisterData, Token } from "../../../@types";
 
 const API_BASE_URL = "http://localhost:3002";
 

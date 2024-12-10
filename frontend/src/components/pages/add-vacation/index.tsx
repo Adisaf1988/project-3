@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Stack from "@mui/material/Stack";
+import CircularProgress from "@mui/material/CircularProgress";
 import { addVacationToApi, uploadImage } from "./service";
 
 import AdminGuard from "../../AdminGuard";
@@ -22,6 +23,7 @@ function AddVacationPage() {
 
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false); // State for loading
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -43,6 +45,8 @@ function AddVacationPage() {
       return;
     }
 
+    setLoading(true);
+
     try {
       const { filename } = await uploadImage(file);
       const response = await addVacationToApi({
@@ -61,6 +65,8 @@ function AddVacationPage() {
         setMessage("An unknown error occurred.");
         console.error("Adding vacation failed:", error);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,7 +131,7 @@ function AddVacationPage() {
       <Box sx={{ height: 16 }} />
       <InputFileUpload handleFileChange={handleFileChange} />
       <Box sx={{ height: 16 }} />
-      <BasicButtons />
+      <BasicButtons loading={loading} /> {loading && <CircularProgress />}
       {message && <Typography variant="body1">{message}</Typography>}
     </Box>
   );
@@ -152,12 +158,16 @@ export function InputFileUpload({
   );
 }
 
-export function BasicButtons() {
+export function BasicButtons({ loading }: { loading: boolean }) {
   const navigate = useNavigate();
   return (
     <Stack spacing={2} direction="row">
-      <Button type="submit" variant="contained">
-        Add vacation
+      <Button type="submit" variant="contained" disabled={loading}>
+        {loading ? (
+          <CircularProgress size={24} color="inherit" />
+        ) : (
+          "Add vacation"
+        )}
       </Button>
       <Button variant="outlined" onClick={() => navigate("/vacations")}>
         Cancel

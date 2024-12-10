@@ -18,11 +18,14 @@ import { RegisterData } from "../../../@types";
 
 function RegisterPage() {
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const { register, user } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const data = Object.fromEntries(
@@ -39,6 +42,8 @@ function RegisterPage() {
         setMessage("An unknown error occurred.");
         console.error("Registration failed:", error);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -106,8 +111,12 @@ function RegisterPage() {
                   />
                 </div>
 
-                <MDBBtn type="submit" className="mb-4" size="lg">
-                  Register
+                <MDBBtn className="mb-4" size="lg" disabled={loading}>
+                  {loading ? (
+                    <div className="spinner-border spinner-border-sm text-light" />
+                  ) : (
+                    "Register"
+                  )}
                 </MDBBtn>
               </form>
 

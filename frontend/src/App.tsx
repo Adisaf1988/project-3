@@ -116,7 +116,7 @@ function ResponsiveAppBar() {
     {
       name: "vacations",
       click: () => {
-        nav("/vacations");
+        nav("/vacations/");
       },
       admin: false,
     },

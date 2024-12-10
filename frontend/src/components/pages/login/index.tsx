@@ -20,9 +20,11 @@ function LoginPage() {
 
   const { login, user } = useAuth();
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     try {
+      setLoading(true);
       e.preventDefault();
       const data = Object.fromEntries(
         new FormData(e.target as HTMLFormElement).entries()
@@ -38,6 +40,8 @@ function LoginPage() {
         setMessage("An unknown error occurred.");
         console.error("Login failed:", error);
       }
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -79,10 +83,16 @@ function LoginPage() {
                     type="password"
                   />
                 </div>
+                
 
-                <MDBBtn className="mb-4" size="lg">
-                  Login
+                <MDBBtn className="mb-4" size="lg" disabled={loading}>
+                  {loading ? (
+                    <div className="spinner-border spinner-border-sm text-light" />
+                  ) : (
+                    "Login"
+                  )}
                 </MDBBtn>
+
 
                 <div>
                   <MDBBtn

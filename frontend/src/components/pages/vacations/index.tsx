@@ -13,6 +13,7 @@ import AuthGuarded from "../../AuthGuard";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Vacation } from "../../../@types";
+import { LocalHospital } from "@mui/icons-material";
 
 function VacationsPage() {
   const { user, addFollow, followedVacations } = useAuth();
@@ -39,14 +40,18 @@ function VacationsPage() {
 
   const handleFilterChange = () => {
     setShowOnlyFollowed(!showOnlyFollowed);
+    setCurrentPage(1);
   };
 
   const handleNotStartedChange = () => {
+    console.log("---" + !showNotStarted);
     setShowNotStarted(!showNotStarted);
+    setCurrentPage(1);
   };
 
   const handleActiveChange = () => {
     setShowActive(!showActive);
+    setCurrentPage(1);
   };
 
   const handlePageChange = (pageNumber: number) => {
@@ -84,6 +89,7 @@ function VacationsPage() {
     setShowOnlyFollowed(false);
     setShowNotStarted(false);
     setShowActive(false);
+    setCurrentPage(1);
   };
 
   const filteredVacations = vacations.filter((vacation, index) => {
@@ -139,7 +145,7 @@ function VacationsPage() {
             </button>
             <button
               onClick={() => {
-                console.log("Current vacation:", currentVacations[index]); // הוספת לוג
+                console.log("Current vacation:", currentVacations[index]);
                 handleDelete(currentVacations[index].id);
               }}
               style={{

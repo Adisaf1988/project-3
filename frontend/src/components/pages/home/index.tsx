@@ -9,7 +9,7 @@ const HomePage: React.FC = () => {
     <div className="home-container">
       <div className="image-container">
         <img
-          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+          src="https://media1.tenor.com/m/eQDuTRTKWDcAAAAd/waves-ocean.gif"
           alt="Exotic Beach"
           className="background-image"
         />

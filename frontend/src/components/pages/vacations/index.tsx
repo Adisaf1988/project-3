@@ -13,7 +13,6 @@ import AuthGuarded from "../../AuthGuard";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Vacation } from "../../../@types";
-import { LocalHospital } from "@mui/icons-material";
 
 function VacationsPage() {
   const { user, addFollow, followedVacations } = useAuth();
@@ -44,7 +43,6 @@ function VacationsPage() {
   };
 
   const handleNotStartedChange = () => {
-    console.log("---" + !showNotStarted);
     setShowNotStarted(!showNotStarted);
     setCurrentPage(1);
   };
@@ -78,7 +76,7 @@ function VacationsPage() {
   const follow = async (vacationId: number) => {
     console.log("Vacation ID to delete:", vacationId);
     try {
-      const response = await followVacation(vacationId, +user!.users_id);
+      await followVacation(vacationId, +user!.users_id);
       addFollow(vacations.find((v) => v.id == vacationId)!);
     } catch (error) {
       console.error("Error deleting vacation:", error);
@@ -92,7 +90,7 @@ function VacationsPage() {
     setCurrentPage(1);
   };
 
-  const filteredVacations = vacations.filter((vacation, index) => {
+  const filteredVacations = vacations.filter((vacation) => {
     const isFollowed = showOnlyFollowed
       ? followedVacations.some((v) => v.id == vacation.id)
       : true;

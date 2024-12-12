@@ -7,20 +7,20 @@ dotenv.config();
 const URL = process.env.API_URL || "http://localhost:3002";
 
 describe("Integration Tests for Authentication and User Details", () => {
-  let token; // To store the JWT token for authenticated requests
+  let token; 
 
-  // Test login functionality
+ 
   describe("POST /login", () => {
     it("Should successfully log in and return a valid token", async () => {
       const response = await axios.post(`${URL}/api/auth/login`, {
-        email: "adi100@gmail.com", // Replace with valid test credentials
-        password: "123456", // Replace with the corresponding password
+        email: "adi100@gmail.com", 
+        password: "123456", 
       });
 
       assert.equal(response.status, 200, "Expected status 200");
       assert(response.data.access_token, "Token should be returned");
 
-      // Save the token for later use
+    
       token = response.data.access_token;
     });
 
@@ -56,7 +56,6 @@ describe("Integration Tests for Authentication and User Details", () => {
     });
   });
 
-  // Test user details functionality
   describe("GET /userDetails", () => {
     it("Should return user details and followed vacations", async () => {
       const response = await axios.get(`${URL}/api/auth/userDetails`, {

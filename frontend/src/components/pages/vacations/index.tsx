@@ -186,6 +186,7 @@ function VacationsPage() {
                 : "white",
             }}
           ></i>
+
           <span style={{ marginLeft: "2px", color: "white" }}></span>
         </button>
       );

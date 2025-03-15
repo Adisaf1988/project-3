@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { getVacations } from "./handlers/getVacations"; // מניח שקיימת פונקציה כזו
+import { getVacations } from "./handlers/getVacations";
 import { addVacation } from "./handlers/addVacation";
 import { editVacation } from "./handlers/editVacation";
 import { deleteVacation } from "./handlers/deleteVacation";

@@ -83,7 +83,6 @@ function LoginPage() {
                     type="password"
                   />
                 </div>
-                
 
                 <MDBBtn className="mb-4" size="lg" disabled={loading}>
                   {loading ? (
@@ -92,7 +91,6 @@ function LoginPage() {
                     "Login"
                   )}
                 </MDBBtn>
-
 
                 <div>
                   <MDBBtn
